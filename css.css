@@ -1,0 +1,157 @@
+*{
+  box-sizing: border-box;
+}
+
+body{
+  background-color: silver;
+}
+#header{
+  padding: 50px;
+
+  display: block;
+  text-align: center;
+
+  font-family: 'Anton', sans-serif;
+  font-size: 32px;
+}
+
+#processes{
+  margin-top: 30px;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  display: block;
+}
+
+#processesButton{
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+
+  background-color: #6E6E6E;
+
+  display: block;
+
+  width: 80px
+}
+
+#processesButton:hover{
+  background-color: #A4A4A4;
+  cursor: pointer;
+}
+
+#inputTimeButton{
+  padding : 5px 10px;
+  border: none;
+  border-radius: 10px;
+
+  background-color: #6E6E6E;
+}
+
+#inputTimeButton:hover{
+  background-color: #A4A4A4;
+  cursor: pointer;
+}
+
+#outputArea{
+  margin-left: 24px;
+  margin-right: auto;
+
+  height:90%;
+  width:90%;
+
+  background-color: #EAEAEA;
+  border-radius: 10px;
+
+  text-align: left;
+  overflow-y:auto;
+  display:none
+}
+
+#ganttArea{
+  position: relative;
+  top : 20px;
+}
+
+#ganttIn{
+  position: absolute;
+  top : 20px;
+  left : 50px;
+
+  z-index: 2;
+
+  width : 400px;
+  height : 20px;
+}
+#runChartP{
+  position: static;
+
+  font-weight: bold;
+  font-size: 11px;
+
+  margin : 0 0 5px 40px;
+
+  display: none;
+}
+#colorTable{
+  width: 80%;
+  height : 55px;
+
+  margin: 35px auto 20px auto;
+
+  overflow-y: auto;
+}
+
+.processColor{
+  /*margin: 5px 10px;*/
+
+  position: relative;
+  height: auto;
+
+  display: inline-block;
+
+  line-height: 17px;
+
+  height: 20px;
+  width: 18.7%;
+
+  text-align: center;
+}
+
+.processColorName{
+  position: relative;
+
+  font-size: 11px;
+  margin: 0px;
+  vertical-align: : middle;
+  display: inline;
+}
+
+.processColorBox{
+  position: relative;
+  display: inline-block;
+
+  width: 10px;
+  height: 10px;
+
+  background-color: red;
+  border-radius: 3px;
+
+  vertical-align: : middle;
+  line-height: inherit;
+}
+
+table{
+  background: white;
+  text-align: center;
+
+  border-radius: 20px;
+
+  margin-left: auto;
+  margin-right: auto;
+}

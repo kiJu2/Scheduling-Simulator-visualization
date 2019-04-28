@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+</div>
+<head>
+  <link href = "css.css?ver=7" rel = "stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
+</head>
+<body>
+  <title = "Scheduling - 5"></title>
+  <h id = "header">Scheduling simulator</h>
+  <table>
+    <tr>
+      <th id = "gantt" width = "700px" height = "50px" colspan="2">
+      <h>Gantt chart</h>
+      </th>
+    </tr>
+    <tr>
+      <!-- Chart -->
+      <td width = "500px" height = "300px">
+        <div id = "ganttArea" style="overflow-y:auto;height:100%;text-align:left;">
+          <img id = "ganttIn" src = 'ganttBackground.png'></img>
+          <div>
+
+
+        </div>
+      </td>
+      <!-- Input -->
+      <td rowspan="2"  height = '200px' >
+        <div id = "inputArea" style="overflow-y:auto;height:100%">
+
+      </div>
+      </td>
+    </tr>
+    <tr>
+      <!-- Output -->
+      <td height = "200px">
+        <div id = 'outputArea'>
+
+        </div>
+      </td>
+    </tr>
+  </table>
+  <input type = "number" id = "processes" placeholder="processes">
+  <input type = "button" id = "processesButton" value = "Input">
+</body>
+<script
+  src="https://code.jquery.com/jquery-3.4.0.min.js"
+  integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg="
+  crossorigin="anonymous"></script>
+  <script src="js.js?ver=5"></script>
+</html>
