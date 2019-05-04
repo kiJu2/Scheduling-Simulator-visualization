@@ -70,7 +70,7 @@ body{
 
   text-align: left;
   overflow-y:auto;
-  display:none
+  display:none;
 }
 
 #ganttArea{
@@ -102,14 +102,52 @@ body{
   width: 80%;
   height : 55px;
 
-  margin: 35px auto 20px auto;
+  margin: 35px auto 0px auto;
 
   overflow-y: auto;
 }
 
-.processColor{
-  /*margin: 5px 10px;*/
+#readyQueueBox{
+    width: 80%;
+    height : 200px;
 
+    margin: 0 auto 0 auto;
+
+    overflow-y: auto;
+}
+#processQueue{
+  margin-top: 15px;
+
+  overflow-y: auto;
+}
+
+.processQueue{
+  padding: 15px;
+  margin-bottom: 5px;
+  margin-right: 80px;
+  margin-left: 10px;
+
+  border-radius: 15px;
+}
+
+.processQueue > *{
+  margin: 0 0 0 40px;
+
+  display: block;
+}
+.inQueueData:first-child{
+  margin-bottom: : 11px;
+  font-size: 12px;
+
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.inQueueData{
+  font-size: 10px;
+}
+
+.processColor{
   position: relative;
   height: auto;
 
