@@ -1,195 +1,172 @@
-*{
+* {
   box-sizing: border-box;
 }
 
-body{
+body {
   background-color: silver;
 }
-#header{
-  padding: 50px;
 
+#header {
+  padding: 50px;
   display: block;
   text-align: center;
-
   font-family: 'Anton', sans-serif;
   font-size: 32px;
 }
 
-#processes{
+#processes {
   margin-top: 30px;
-
   margin-left: auto;
   margin-right: auto;
-
   display: block;
 }
 
-#processesButton{
+#processesButton {
   margin-top: 10px;
   margin-left: auto;
   margin-right: auto;
-
   padding: 10px;
   border-radius: 10px;
   border: none;
-
   background-color: #6E6E6E;
-
   display: block;
-
   width: 80px
 }
 
-#processesButton:hover{
+#processesButton:hover {
   background-color: #A4A4A4;
   cursor: pointer;
 }
 
-#inputTimeButton{
-  padding : 5px 10px;
+#inputTimeButton {
+  padding: 5px 10px;
   border: none;
   border-radius: 10px;
-
   background-color: #6E6E6E;
 }
 
-#inputTimeButton:hover{
+#inputTimeButton:hover {
   background-color: #A4A4A4;
   cursor: pointer;
 }
 
-#outputArea{
+#outputArea {
   margin-left: 24px;
   margin-right: auto;
-
-  height:90%;
-  width:90%;
-
+  height: 90%;
+  width: 90%;
   background-color: #EAEAEA;
   border-radius: 10px;
-
   text-align: left;
-  overflow-y:auto;
-  display:none;
-}
-
-#ganttArea{
-  position: relative;
-  top : 20px;
-}
-
-#ganttIn{
-  position: absolute;
-  top : 20px;
-  left : 50px;
-
-  z-index: 2;
-
-  width : 400px;
-  height : 20px;
-}
-#runChartP{
-  position: static;
-
-  font-weight: bold;
-  font-size: 11px;
-
-  margin : 0 0 5px 40px;
-
+  overflow-y: auto;
   display: none;
 }
-#colorTable{
+
+#ganttArea {
+  position: relative;
+  top: 20px;
+}
+
+#ganttIn {
+  position: absolute;
+  top: 20px;
+  left: 50px;
+  z-index: 2;
+  width: 400px;
+  height: 20px;
+}
+
+/*#ganttInFlag{
+
+}*/
+#runChartP {
+  position: static;
+  font-weight: bold;
+  font-size: 11px;
+  margin: 0 0 5px 40px;
+  display: none;
+}
+
+#colorTable {
   width: 80%;
-  height : 55px;
+  height: 55px;
+  margin: 0px auto 0px auto;
+  overflow-y: auto;
+  position: relative;
+  bottom: 0;
+  top : 0;
+  z-index: 1;
+}
 
-  margin: 35px auto 0px auto;
-
+#readyQueueBox {
+  width: 80%;
+  height: 200px;
+  margin: 0 auto 0 auto;
   overflow-y: auto;
 }
 
-#readyQueueBox{
-    width: 80%;
-    height : 200px;
-
-    margin: 0 auto 0 auto;
-
-    overflow-y: auto;
-}
-#processQueue{
+#processQueue {
   margin-top: 15px;
-
   overflow-y: auto;
 }
 
-.processQueue{
+.processQueue {
   padding: 15px;
   margin-bottom: 5px;
   margin-right: 80px;
   margin-left: 10px;
-
   border-radius: 15px;
 }
 
-.processQueue > *{
+.processQueue>* {
   margin: 0 0 0 40px;
-
   display: block;
 }
-.inQueueData:first-child{
+
+.inQueueData:first-child {
   margin-bottom: : 11px;
   font-size: 12px;
-
   margin-bottom: 5px;
   font-weight: bold;
 }
 
-.inQueueData{
+.inQueueData {
   font-size: 10px;
 }
 
-.processColor{
+.processColor {
   position: relative;
   height: auto;
-
   display: inline-block;
-
   line-height: 17px;
-
   height: 20px;
   width: 18.7%;
-
   text-align: center;
 }
 
-.processColorName{
+.processColorName {
   position: relative;
-
   font-size: 11px;
   margin: 0px;
   vertical-align: : middle;
   display: inline;
 }
 
-.processColorBox{
+.processColorBox {
   position: relative;
   display: inline-block;
-
   width: 10px;
   height: 10px;
-
   background-color: red;
   border-radius: 3px;
-
   vertical-align: : middle;
   line-height: inherit;
 }
 
-table{
+table {
   background: white;
   text-align: center;
-
   border-radius: 20px;
-
   margin-left: auto;
   margin-right: auto;
 }

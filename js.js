@@ -35,8 +35,9 @@ $(document).ready(function() {
       <option>FCFS</option>\
       <option>RR</option>\
       <option>SPN</option>\
-      <option>SPTN</option>\
+      <option>SRTN</option>\
       <option>HRRN</option>\
+      <option>LPHRN</option>\
     </select>");
 
     $('#outputArea').css('display', 'none');
@@ -49,12 +50,13 @@ $(document).ready(function() {
       <input class = 'inputTime" + String(i) + "' id = 'burstTime" + String(i) + "' type = 'number' placeholder='Burst Time' style = 'margin-bottom: 15px;display: none;'><br>\
       ");
     }
-    $('#inputArea').append("<input class = 'inputTime" + String(i) + "' id = 'quantumTime' type = 'number' placeholder='Quantum Time' style = 'margin-bottom: 8px;display: none;'><br>")
-    $('#inputArea').append("<input id = 'inputTimeButton' class = 'inputTime" + String(i + 1) + "' type = 'button' value = 'Show me!' style = 'display:none'>");
-    $('#outputArea').addClass("inputTime" + String(i + 2));
+    $('#inputArea').append("<input class = 'inputTime" + String(i) + "' id = 'quantumTime' type = 'number' placeholder='Quantum Time' style = 'margin-bottom: 4px;display: none;'><br>")
+    $('#inputArea').append("<input class = 'inputTime" + String(i + 1) + "' id = 'chartSpeed' type = 'number' value = '1000' placeholder='Chart Speed m/s' style = 'margin-bottom: 8px;display: none;'><br>")
+    $('#inputArea').append("<input id = 'inputTimeButton' class = 'inputTime" + String(i + 2) + "' type = 'button' value = 'Show me!' style = 'display:none'>");
+    $('#outputArea').addClass("inputTime" + String(i + 3));
 
     let timing = 0;
-    for (let i = 0; i <= cycleNum + 2; i++) {
+    for (let i = 0; i <= cycleNum + 3; i++) {
       $(".inputTime" + String(i)).delay(timing).fadeIn(1000);
       timing += 200;
     }
@@ -89,12 +91,18 @@ $(document).ready(function() {
 
     let colorEmpty = "#4C4C4C";
     let colorOption = 0;
+    colorProcess = new Array();
     for (let i = 0; i < processes; i++) {
       colorProcess.push(colorCode[colorOption]);
       colorOption++;
       if (i >= 12) colorOption = 0;
     }
     // console.log("colorProcess : " + colorProcess);
+
+    console.log("process color list ----");
+    for (let i = 0; i < processes; i++) {
+      console.log("process " + i + " is " + colorProcess[i]);
+    }
 
     for (let cycleNum = 0; cycleNum < intervalRunTime.length; cycleNum++) {
       $('#ganttArea').append("\
@@ -110,26 +118,45 @@ $(document).ready(function() {
       // console.log("colorProcess[runSequence[cycleNum]]) : " + colorProcess[runSequence[cycleNum]]);
       // console.log("runSequence[cycleNum] : " + runSequence[cycleNum]);
     }
+
+
     // 애니메이션
 
     // 각 div의 길이를 구함
     let maxBurstTime = 0;
     let maxLength = 400;
     let percentageLength = new Array();
+
+    let totalTime = 0; // 전체 시간을 나타냄.
+    for (let i = 0; i < intervalRunTime.length; i++) totalTime += intervalRunTime[i];
+
     console.log("---------animate----------")
     //비율을 구함
     for (let i = 0; i < intervalRunTime.length; i++) maxBurstTime += Number(intervalRunTime[i]);
     for (let i = 0; i < intervalRunTime.length; i++) {
       percentageLength.push(parseFloat(parseFloat(intervalRunTime[i]) / parseFloat(maxBurstTime)));
-      // console.log("intervalRunTime " + String(intervalRunTime[i]));
-      // console.log("maxBurstTime " + String(maxBurstTime));
-      // console.log("percentageLength : " + String(percentageLength[i]));
+    }
+    console.log("Number(maxBurstTime) / Number(intervalRunTime.length) : " + Number(maxBurstTime) / Number(intervalRunTime.length));
+    $('#ganttArea').append("<br>");
+    for (let i = 0; i < totalTime; i++) {
+      $('#ganttArea').append("<div style = '\
+      width : " + (Number(maxLength) / Number(totalTime)) + "px;\
+      height : 21px;\
+      " + ((i == totalTime - 1) ? ("") : "border-right : 2px solid white;") + "\
+      float : left;\
+      position : relative;\
+      bottom : 21px;\
+      margin-left : " + ((i == 0) ? ("10%") : "") + ";\
+      z-index:2;\
+      display:inline-block;'\
+      </div>");
     }
     //------------------------------------------------
     //시간 및 동작
     //프로세스의 수에 따라서 시간을 변동시키자, 처음 시작할 때 너무 느려
     let timing = 0;
-    let timingMaximum = intervalRunTime.length * 1500; //바 하나당 시간.
+    //chartSpeed
+    let timingMaximum = intervalRunTime.length * Number($('#chartSpeed').val()); //바 하나당 시간.
     //바가 끝나는 시간은 여기서 알 수 있음.
 
     for (let cycleNum = 0; cycleNum < intervalRunTime.length; cycleNum++) {
@@ -158,8 +185,7 @@ $(document).ready(function() {
       pro++;
     }
     //대기열 나타내기
-    let totalTime = 0; // 전체 시간을 나타냄.
-    for (let i = 0; i < intervalRunTime.length; i++) totalTime += intervalRunTime[i];
+
     let turn = parseFloat((parseFloat(timingMaximum) / parseFloat(totalTime)));
     $('#ganttArea').append("<div id = 'readyQueueBox'></div>");
 
@@ -330,7 +356,7 @@ $(document).ready(function() {
 
         if (in_processesor_state[optionProcess] == false) //프로세스 처음 실행 시
           runSequence.push(optionProcess); // 해당 프로세스를 저장
-          console.log("optionProcess is "+optionProcess);;
+        console.log("optionProcess is " + optionProcess);;
         remain_burstTime[optionProcess] -= 1; // 작업 1 실행
         _optionProcess = -1;
         p_timeQuantum[optionProcess] += 1; // 타임퀀텀 카운트 1증가
@@ -383,6 +409,515 @@ $(document).ready(function() {
       normalizedTurnAroundTime[i] = parseFloat(parseFloat(turnAroundTime[i]) / parseFloat(burstTime[i]));
     }
   }
+  //----------------------HRRN-----------------------
+  function hrrn() {
+    console.log("----HRRN Run----");
+    let currentTime = 0;
+    let exitProcessCnt = 0;
+    let runProcess = -1;
+    let isInQueue = new Array();
+    let isEmptyTime = false;
+    let runTimeSelecter = -1;
+    let queue = new Array();
+    let cloneBurstTime = new Array();
+    let responseRatio = new Array();
+
+    for (let i = 0; i < processes; i++) {
+      //대기시간 초기화
+      waitingTime[i] = 0;
+
+      //BusrtTime 클론 생성.
+      cloneBurstTime[i] = Number(burstTime[i]);
+      isInQueue[i] = false;
+    }
+
+    while (exitProcessCnt < processes) {
+      // console.log("time : " + currentTime);
+      //지금 시간대에 누군가 왔을 경우 Q 처리.
+      for (let optionProcess = 0; optionProcess < processes; optionProcess++) {
+        //해당 프로세스 도착시간이 지났으며, 프로세스 실행 시간이 남아있고, Q안에 존재하지 않을 경우.
+        if (_arrivalTime[optionProcess] == currentTime && cloneBurstTime[optionProcess] > 0 && !isInQueue[optionProcess]) {
+          isInQueue[optionProcess] = true;
+          queue.push(optionProcess);
+        }
+      }
+      //Queue의 대기열 상태를 바꿈 ->(WT + BT) / BT 기준.
+      //@수정함.
+      //생성
+      responseRatio = new Array();
+      for (let queueSwaper = 0; queueSwaper < queue.length; queueSwaper++) responseRatio.push(0);
+      //대입
+      for (let queueSwaper = 0; queueSwaper < queue.length; queueSwaper++) {
+        responseRatio[queueSwaper] = parseFloat(parseFloat(burstTime[queue[queueSwaper]] + parseFloat(waitingTime[queue[queueSwaper]])) / parseFloat(burstTime[queue[queueSwaper]]));
+      }
+
+      //스왑
+      for (let queueSwaper = 0; queueSwaper < queue.length; queueSwaper++) {
+        for (let queueInSwaper = queueSwaper + 1; queueInSwaper < queue.length; queueInSwaper++) {
+          if (responseRatio[queueSwaper] < responseRatio[queueInSwaper]) {
+            let dtemp;
+            let itemp;
+            dtemp = parseFloat(responseRatio[queueSwaper]);
+            responseRatio[queueSwaper] = parseFloat(responseRatio[queueInSwaper]);
+            responseRatio[queueInSwaper] = parseFloat(dtemp);
+
+            itemp = Number(queue[queueSwaper]);
+            queue[queueSwaper] = Number(queue[queueInSwaper]);
+            queue[queueInSwaper] = Number(itemp);
+          }
+        }
+      }
+      //@여기까지
+      // console.log("queue[실행 도중] : ");
+      for (let i = 0; i < queue.length; i++) console.log(queue[i]);
+
+      //프로세서 할당
+      //대기열에 누군가 있냐 ? 그리고 실행중인 프로세스가 없냐 ?
+      if (queue.length > 0 && runProcess == -1) {
+        runProcess = queue[0];
+        queue.shift();
+
+        runTimeSelecter++;
+        intervalRunTime.push(0);
+        runSequence.push(runProcess);
+        isEmptyTime = false;
+      }
+      //대기열에도 없으면서 실행중이지도 않냐? ==> 공백시간이냐 ?
+      else if (queue.length <= 0 && runProcess == -1 && isEmptyTime == false) {
+        runTimeSelecter++;
+        intervalRunTime.push(0);
+        runSequence.push(-1);
+        isEmptyTime = true;
+      }
+
+      // console.log("runProcess[실행 도중] : " + runProcess);
+      //실행 처리
+      //누군가 실행중이냐?
+      if (runProcess != -1) {
+        //burstTime이 아직 남았냐?
+        if (cloneBurstTime[runProcess] > 0) {
+          intervalRunTime[runTimeSelecter]++;
+          cloneBurstTime[runProcess]--;
+          //burstTime이 더 이상 없냐?
+          if (cloneBurstTime[runProcess] <= 0) {
+            exitProcessCnt++;
+            runProcess = -1;
+          }
+        }
+      }
+      //공백시간이냐?
+      else if (runProcess == -1 && isEmptyTime == true) {
+        intervalRunTime[runTimeSelecter]++;
+      }
+
+      //대기열에 남은 프로세스가 존재 하냐?(대기시간)
+      for (let waitProcess = 0; waitProcess < queue.length; waitProcess++) {
+        waitingTime[queue[waitProcess]]++;
+      }
+      //Queue저장.
+
+      queueLine.push();
+      queueLine[currentTime] = new Array();
+      queueLine[currentTime] = queue.slice();
+
+      currentTime++;
+
+    }
+    for (let i = 0; i < processes; i++) {
+      turnAroundTime[i] = Number(waitingTime[i]) + Number(burstTime[i]);
+      normalizedTurnAroundTime[i] = parseFloat(turnAroundTime[i]) / parseFloat(burstTime[i]);
+    }
+    for (let i = 0; i < queueLine.length; i++) {
+      console.log("Queue Time :" + i);
+      for (let j = 0; j < queueLine[i].length; j++) console.log(queueLine[i][j]);
+    }
+  }
+  //----------------------LPHRN-----------------------
+  function LPHRN() {
+    console.log("----LPHRN Run----");
+    let currentTime = 0;
+    let exitProcessCnt = 0;
+    let runProcess = -1;
+    let isInQueue = new Array();
+    let isEmptyTime = false;
+    let runTimeSelecter = -1;
+    let queue = new Array();
+    let cloneBurstTime = new Array();
+    let responseRatio = new Array();
+
+    for (let i = 0; i < processes; i++) {
+      //대기시간 초기화
+      waitingTime[i] = 0;
+
+      //BusrtTime 클론 생성.
+      cloneBurstTime[i] = Number(burstTime[i]);
+      isInQueue[i] = false;
+    }
+
+    while (exitProcessCnt < processes) {
+      //@수정함
+      //프림프션
+      if (runProcess != -1 && 0 < queue.length) {
+        if (cloneBurstTime[queue[0]] < cloneBurstTime[runProcess]) {
+          isInQueue[runProcess] = false;
+          queue.unshift(runProcess);
+          runProcess = -1;
+        }
+      }
+      // console.log("time : " + currentTime);
+      //지금 시간대에 누군가 왔을 경우 Q 처리.
+      for (let optionProcess = 0; optionProcess < processes; optionProcess++) {
+        //해당 프로세스 도착시간이 지났으며, 프로세스 실행 시간이 남아있고, Q안에 존재하지 않을 경우.
+        if (_arrivalTime[optionProcess] == currentTime && cloneBurstTime[optionProcess] > 0 && !isInQueue[optionProcess]) {
+          isInQueue[optionProcess] = true;
+          queue.push(optionProcess);
+        }
+      }
+      //Queue의 대기열 상태를 바꿈 ->(WT + BT) / BT 기준.
+      //@수정함.
+      //생성
+      responseRatio = new Array();
+      for (let queueSwaper = 0; queueSwaper < queue.length; queueSwaper++) responseRatio.push(0);
+      //대입
+      for (let queueSwaper = 0; queueSwaper < queue.length; queueSwaper++) {
+        responseRatio[queueSwaper] = parseFloat(parseFloat(burstTime[queue[queueSwaper]] + parseFloat(waitingTime[queue[queueSwaper]])) / parseFloat(burstTime[queue[queueSwaper]]));
+      }
+
+      //스왑
+      for (let queueSwaper = 0; queueSwaper < queue.length; queueSwaper++) {
+        for (let queueInSwaper = queueSwaper + 1; queueInSwaper < queue.length; queueInSwaper++) {
+          if (responseRatio[queueSwaper] < responseRatio[queueInSwaper]) {
+            let dtemp;
+            let itemp;
+            dtemp = parseFloat(responseRatio[queueSwaper]);
+            responseRatio[queueSwaper] = parseFloat(responseRatio[queueInSwaper]);
+            responseRatio[queueInSwaper] = parseFloat(dtemp);
+
+            itemp = Number(queue[queueSwaper]);
+            queue[queueSwaper] = Number(queue[queueInSwaper]);
+            queue[queueInSwaper] = Number(itemp);
+          }
+        }
+      }
+      //@여기까지
+      // console.log("queue[실행 도중] : ");
+      for (let i = 0; i < queue.length; i++) console.log(queue[i]);
+
+      //프로세서 할당
+      //대기열에 누군가 있냐 ? 그리고 실행중인 프로세스가 없냐 ?
+      if (queue.length > 0 && runProcess == -1) {
+        runProcess = queue[0];
+        queue.shift();
+
+        runTimeSelecter++;
+        intervalRunTime.push(0);
+        runSequence.push(runProcess);
+        isEmptyTime = false;
+      }
+      //대기열에도 없으면서 실행중이지도 않냐? ==> 공백시간이냐 ?
+      else if (queue.length <= 0 && runProcess == -1 && isEmptyTime == false) {
+        runTimeSelecter++;
+        intervalRunTime.push(0);
+        runSequence.push(-1);
+        isEmptyTime = true;
+      }
+
+      // console.log("runProcess[실행 도중] : " + runProcess);
+      //실행 처리
+      //누군가 실행중이냐?
+      if (runProcess != -1) {
+        //burstTime이 아직 남았냐?
+        if (cloneBurstTime[runProcess] > 0) {
+          intervalRunTime[runTimeSelecter]++;
+          cloneBurstTime[runProcess]--;
+          //burstTime이 더 이상 없냐?
+          if (cloneBurstTime[runProcess] <= 0) {
+            exitProcessCnt++;
+            runProcess = -1;
+          }
+        }
+      }
+      //공백시간이냐?
+      else if (runProcess == -1 && isEmptyTime == true) {
+        intervalRunTime[runTimeSelecter]++;
+      }
+
+      //대기열에 남은 프로세스가 존재 하냐?(대기시간)
+      for (let waitProcess = 0; waitProcess < queue.length; waitProcess++) {
+        waitingTime[queue[waitProcess]]++;
+      }
+      //Queue저장.
+
+      queueLine.push();
+      queueLine[currentTime] = new Array();
+      queueLine[currentTime] = queue.slice();
+
+      currentTime++;
+
+    }
+    for (let i = 0; i < processes; i++) {
+      turnAroundTime[i] = Number(waitingTime[i]) + Number(burstTime[i]);
+      normalizedTurnAroundTime[i] = parseFloat(turnAroundTime[i]) / parseFloat(burstTime[i]);
+    }
+    for (let i = 0; i < queueLine.length; i++) {
+      console.log("Queue Time :" + i);
+      for (let j = 0; j < queueLine[i].length; j++) console.log(queueLine[i][j]);
+    }
+  }
+  //----------------------SPN-----------------------
+  function spn() {
+    console.log("----SPN Run----");
+    let currentTime = 0;
+    let exitProcessCnt = 0;
+    let runProcess = -1;
+    let isInQueue = new Array();
+    let isEmptyTime = false;
+    let runTimeSelecter = -1;
+    let queue = new Array();
+    let cloneBurstTime = new Array();
+    let queueBurstTime = new Array();
+
+    for (let i = 0; i < processes; i++) {
+      //대기시간 초기화
+      waitingTime[i] = 0;
+
+      //BusrtTime 클론 생성.
+      cloneBurstTime[i] = Number(burstTime[i]);
+      isInQueue[i] = false;
+    }
+
+    while (exitProcessCnt < processes) {
+      // console.log("time : " + currentTime);
+      //지금 시간대에 누군가 왔을 경우 Q 처리.
+      for (let optionProcess = 0; optionProcess < processes; optionProcess++) {
+        //해당 프로세스 도착시간이 지났으며, 프로세스 실행 시간이 남아있고, Q안에 존재하지 않을 경우.
+        if (_arrivalTime[optionProcess] == currentTime && cloneBurstTime[optionProcess] > 0 && !isInQueue[optionProcess]) {
+          isInQueue[optionProcess] = true;
+          queue.push(optionProcess);
+        }
+      }
+      //Queue의 대기열 상태를 바꿈 ->(WT + BT) / BT 기준.
+      //@수정함.
+      //생성
+      queueBurstTime = new Array();
+      for (let queueSwaper = 0; queueSwaper < queue.length; queueSwaper++) queueBurstTime.push(0);
+      //대입
+      for (let queueSwaper = 0; queueSwaper < queue.length; queueSwaper++) {
+        queueBurstTime[queueSwaper] = cloneBurstTime[queue[queueSwaper]];
+      }
+
+      //스왑
+      for (let queueSwaper = 0; queueSwaper < queue.length; queueSwaper++) {
+        for (let queueInSwaper = queueSwaper + 1; queueInSwaper < queue.length; queueInSwaper++) {
+          if (queueBurstTime[queueSwaper] > queueBurstTime[queueInSwaper]) {
+            let dtemp;
+            let itemp;
+            dtemp = parseFloat(queueBurstTime[queueSwaper]);
+            queueBurstTime[queueSwaper] = parseFloat(queueBurstTime[queueInSwaper]);
+            queueBurstTime[queueInSwaper] = parseFloat(dtemp);
+
+            itemp = Number(queue[queueSwaper]);
+            queue[queueSwaper] = Number(queue[queueInSwaper]);
+            queue[queueInSwaper] = Number(itemp);
+          }
+        }
+      }
+      //@여기까지
+      // console.log("queue[실행 도중] : ");
+      for (let i = 0; i < queue.length; i++) console.log(queue[i]);
+
+      //프로세서 할당
+      //대기열에 누군가 있냐 ? 그리고 실행중인 프로세스가 없냐 ?
+      if (queue.length > 0 && runProcess == -1) {
+        runProcess = queue[0];
+        queue.shift();
+
+        runTimeSelecter++;
+        intervalRunTime.push(0);
+        runSequence.push(runProcess);
+        isEmptyTime = false;
+      }
+      //대기열에도 없으면서 실행중이지도 않냐? ==> 공백시간이냐 ?
+      else if (queue.length <= 0 && runProcess == -1 && isEmptyTime == false) {
+        runTimeSelecter++;
+        intervalRunTime.push(0);
+        runSequence.push(-1);
+        isEmptyTime = true;
+      }
+
+      // console.log("runProcess[실행 도중] : " + runProcess);
+      //실행 처리
+      //누군가 실행중이냐?
+      if (runProcess != -1) {
+        //burstTime이 아직 남았냐?
+        if (cloneBurstTime[runProcess] > 0) {
+          intervalRunTime[runTimeSelecter]++;
+          cloneBurstTime[runProcess]--;
+          //burstTime이 더 이상 없냐?
+          if (cloneBurstTime[runProcess] <= 0) {
+            exitProcessCnt++;
+            runProcess = -1;
+          }
+        }
+      }
+      //공백시간이냐?
+      else if (runProcess == -1 && isEmptyTime == true) {
+        intervalRunTime[runTimeSelecter]++;
+      }
+
+      //대기열에 남은 프로세스가 존재 하냐?(대기시간)
+      for (let waitProcess = 0; waitProcess < queue.length; waitProcess++) {
+        waitingTime[queue[waitProcess]]++;
+      }
+      //Queue저장.
+
+      queueLine.push();
+      queueLine[currentTime] = new Array();
+      queueLine[currentTime] = queue.slice();
+
+      currentTime++;
+
+    }
+    for (let i = 0; i < processes; i++) {
+      turnAroundTime[i] = Number(waitingTime[i]) + Number(burstTime[i]);
+      normalizedTurnAroundTime[i] = parseFloat(turnAroundTime[i]) / parseFloat(burstTime[i]);
+    }
+    for (let i = 0; i < queueLine.length; i++) {
+      console.log("Queue Time :" + i);
+      for (let j = 0; j < queueLine[i].length; j++) console.log(queueLine[i][j]);
+    }
+  }
+  //----------------------SPTN-----------------------
+  function sptn() {
+    console.log("----SPTN Run----");
+    let currentTime = 0;
+    let exitProcessCnt = 0;
+    let runProcess = -1;
+    let isInQueue = new Array();
+    let isEmptyTime = false;
+    let runTimeSelecter = -1;
+    let queue = new Array();
+    let cloneBurstTime = new Array();
+    let queueBurstTime = new Array();
+
+    for (let i = 0; i < processes; i++) {
+      //대기시간 초기화
+      waitingTime[i] = 0;
+
+      //BusrtTime 클론 생성.
+      cloneBurstTime[i] = Number(burstTime[i]);
+      isInQueue[i] = false;
+    }
+
+    while (exitProcessCnt < processes) {
+      //@수정함
+      //프림프션
+      if (runProcess != -1) {
+        isInQueue[runProcess] = false;
+        queue.unshift(runProcess);
+        runProcess = -1;
+      }
+      // console.log("time : " + currentTime);
+      //지금 시간대에 누군가 왔을 경우 Q 처리.
+      for (let optionProcess = 0; optionProcess < processes; optionProcess++) {
+        //해당 프로세스 도착시간이 지났으며, 프로세스 실행 시간이 남아있고, Q안에 존재하지 않을 경우.
+        if (_arrivalTime[optionProcess] == currentTime && cloneBurstTime[optionProcess] > 0 && !isInQueue[optionProcess]) {
+          isInQueue[optionProcess] = true;
+          queue.push(optionProcess);
+        }
+      }
+      //Queue의 대기열 상태를 바꿈 ->(WT + BT) / BT 기준.
+      //@수정함.
+      //생성
+      queueBurstTime = new Array();
+      for (let queueSwaper = 0; queueSwaper < queue.length; queueSwaper++) queueBurstTime.push(0);
+      //대입
+      for (let queueSwaper = 0; queueSwaper < queue.length; queueSwaper++) {
+        queueBurstTime[queueSwaper] = cloneBurstTime[queue[queueSwaper]];
+      }
+
+      //스왑
+      for (let queueSwaper = 0; queueSwaper < queue.length; queueSwaper++) {
+        for (let queueInSwaper = queueSwaper + 1; queueInSwaper < queue.length; queueInSwaper++) {
+          if (queueBurstTime[queueSwaper] > queueBurstTime[queueInSwaper]) {
+            let dtemp;
+            let itemp;
+            dtemp = parseFloat(queueBurstTime[queueSwaper]);
+            queueBurstTime[queueSwaper] = parseFloat(queueBurstTime[queueInSwaper]);
+            queueBurstTime[queueInSwaper] = parseFloat(dtemp);
+
+            itemp = Number(queue[queueSwaper]);
+            queue[queueSwaper] = Number(queue[queueInSwaper]);
+            queue[queueInSwaper] = Number(itemp);
+          }
+        }
+      }
+      //@여기까지
+      // console.log("queue[실행 도중] : ");
+      for (let i = 0; i < queue.length; i++) console.log(queue[i]);
+
+      //프로세서 할당
+      //대기열에 누군가 있냐 ? 그리고 실행중인 프로세스가 없냐 ?
+      if (queue.length > 0 && runProcess == -1) {
+        runProcess = queue[0];
+        queue.shift();
+
+        runTimeSelecter++;
+        intervalRunTime.push(0);
+        runSequence.push(runProcess);
+        isEmptyTime = false;
+      }
+      //대기열에도 없으면서 실행중이지도 않냐? ==> 공백시간이냐 ?
+      else if (queue.length <= 0 && runProcess == -1 && isEmptyTime == false) {
+        runTimeSelecter++;
+        intervalRunTime.push(0);
+        runSequence.push(-1);
+        isEmptyTime = true;
+      }
+
+      // console.log("runProcess[실행 도중] : " + runProcess);
+      //실행 처리
+      //누군가 실행중이냐?
+      if (runProcess != -1) {
+        //burstTime이 아직 남았냐?
+        if (cloneBurstTime[runProcess] > 0) {
+          intervalRunTime[runTimeSelecter]++;
+          cloneBurstTime[runProcess]--;
+          //burstTime이 더 이상 없냐?
+          if (cloneBurstTime[runProcess] <= 0) {
+            exitProcessCnt++;
+            runProcess = -1;
+          }
+        }
+      }
+      //공백시간이냐?
+      else if (runProcess == -1 && isEmptyTime == true) {
+        intervalRunTime[runTimeSelecter]++;
+      }
+
+      //대기열에 남은 프로세스가 존재 하냐?(대기시간)
+      for (let waitProcess = 0; waitProcess < queue.length; waitProcess++) {
+        waitingTime[queue[waitProcess]]++;
+      }
+      //Queue저장.
+
+      queueLine.push();
+      queueLine[currentTime] = new Array();
+      queueLine[currentTime] = queue.slice();
+
+      currentTime++;
+
+    }
+    for (let i = 0; i < processes; i++) {
+      turnAroundTime[i] = Number(waitingTime[i]) + Number(burstTime[i]);
+      normalizedTurnAroundTime[i] = parseFloat(turnAroundTime[i]) / parseFloat(burstTime[i]);
+    }
+    for (let i = 0; i < queueLine.length; i++) {
+      console.log("Queue Time :" + i);
+      for (let j = 0; j < queueLine[i].length; j++) console.log(queueLine[i][j]);
+    }
+  }
+
   //----------------------FCFS-----------------------
   function fcfs() {
     console.log("----FCFS Run----");
@@ -509,6 +1044,11 @@ $(document).ready(function() {
     //---------------------출력 구간-----------------
     if (select == "FCFS") fcfs();
     if (select == "RR") rr();
+    if (select == "HRRN") hrrn();
+    if (select == "SPN") spn();
+    if (select == "SRTN") sptn();
+    if (select == "LPHRN") LPHRN();
+
     showData();
     showChart();
   })
