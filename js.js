@@ -204,7 +204,7 @@ $(document).ready(function() {
           $('#readyQueueBox').append("<div id = 'processQueue" + qName + "' class = 'processQueue' style = 'background-color: " + colorProcess[queueLine[time][qName]] + ";'>\
             <p class = 'inQueueData'>Process " + queueLine[time][qName] + "</p>\
             <p class = 'inQueueData'>Init Burst Time : " + burstTime[queueLine[time][qName]] + "</p>\
-            <p class = 'inQueueData'>Final Wating in Queue : 10</p>\
+            <p class = 'inQueueData'>Final Wating time in Queue : " + waitingTime[queueLine[time][qName]] + "</p>\
           </div>");
         }
       }, timingQueue);
